@@ -18,6 +18,7 @@ var process *exec.Cmd
 // start starts the godoc server
 func start() {
 	process = exec.Command("godoc", "-http=:8080")
+	process.Dir = "."
 	process.Start()
 }
 
