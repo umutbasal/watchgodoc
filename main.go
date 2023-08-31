@@ -13,12 +13,24 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/proxy"
 )
 
+func getpwd() string {
+	dir, err := os.Getwd()
+	if err != nil {
+		log.Fatal(err)
+	}
+	return dir
+}
+
 var process *exec.Cmd
 
 // start starts the godoc server
 func start() {
+	os.Chdir(getpwd())
+
 	process = exec.Command("godoc", "-http=:8080")
 	process.Dir = "."
+	process.Stdout = os.Stdout
+	process.Stderr = os.Stderr
 	process.Start()
 }
 
