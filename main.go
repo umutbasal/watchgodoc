@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"os/signal"
 	"regexp"
 	"strings"
 
@@ -202,6 +203,15 @@ func main() {
 		}
 	}
 
-	// Block main goroutine forever.
-	<-make(chan struct{})
+	// catch ctrl+c
+	go func() {
+		c := make(chan os.Signal, 1)
+		signal.Notify(c, os.Interrupt)
+		<-c
+		stop()
+		os.Exit(0)
+	}()
+
+	// Wait forever.
+	select {}
 }
