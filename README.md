@@ -6,5 +6,6 @@ watchgodoc is a tool that runs godoc server and watches for changes in the sourc
 Also, it relocates the browser to doc of the package that is changed.
 
 ```sh
+cd your_go_project
 go run github.com/umutbasal/watchgodoc@latest
 ```
