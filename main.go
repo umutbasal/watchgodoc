@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"os/exec"
@@ -38,18 +37,6 @@ func start() {
 
 func stop() {
 	process.Process.Kill()
-}
-
-func status() bool {
-	fmt.Println(process)
-	return process != nil && process.Process != nil
-}
-
-func restart() {
-	if status() {
-		stop()
-	}
-	start()
 }
 
 var location = ""
@@ -209,7 +196,6 @@ func main() {
 					forceRefresh = true
 				}
 				location = locationNew
-				restart()
 			case err, ok := <-watcher.Errors:
 				if !ok {
 					return
