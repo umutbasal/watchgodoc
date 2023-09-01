@@ -53,6 +53,7 @@ func restart() {
 }
 
 var location = ""
+var forceRefresh = false
 
 // proxyServer is a proxy server that redirects to the godoc server
 func proxyServer() {
@@ -66,8 +67,12 @@ func proxyServer() {
 	app.Get("/location", func(c *fiber.Ctx) error {
 		loc := location
 		location = ""
+
+		force := forceRefresh
+		forceRefresh = false
 		return c.JSON(fiber.Map{
 			"location": loc,
+			"force":    force,
 		})
 	})
 
@@ -85,6 +90,10 @@ func proxyServer() {
 					.then(data => {
 						if (data.location != "" && data.location != window.location.href) {
 							window.location.href = data.location
+						}
+						if (data.force) {
+							console.log("force reload")
+							window.location.reload()
 						}
 					})
 					if (window.document.body.innerText.includes("Scan is not yet complete")) {
@@ -197,7 +206,11 @@ func main() {
 				if event.Has(fsnotify.Write) {
 					log.Printf("modified file: %s", event.Name)
 				}
-				location = "http://localhost:6060/pkg/" + readModuleName() + "/" + fname.ReplaceAllString(event.Name, "")
+				locationNew := "http://localhost:6060/pkg/" + readModuleName() + "/" + fname.ReplaceAllString(event.Name, "")
+				if locationNew == location {
+					forceRefresh = true
+				}
+				location = locationNew
 				restart()
 			case err, ok := <-watcher.Errors:
 				if !ok {
