@@ -35,3 +35,5 @@ go run github.com/umutbasal/watchgodoc@latest
     ]
 }
 ```
+
+<img width="1422" alt="image" src="https://github.com/umutbasal/watchgodoc/assets/21194079/38ce8d70-aa57-4104-94be-022835b6239a">
