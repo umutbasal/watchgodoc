@@ -12,6 +12,7 @@ import (
 	"github.com/fsnotify/fsnotify"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/proxy"
+	"github.com/valyala/fasthttp"
 )
 
 func getpwd() string {
@@ -57,6 +58,11 @@ var location = ""
 func proxyServer() {
 	app := fiber.New()
 
+	proxy.WithClient(&fasthttp.Client{
+		NoDefaultUserAgentHeader: true,
+		DisablePathNormalizing:   true,
+	})
+
 	app.Get("/location", func(c *fiber.Ctx) error {
 		loc := location
 		location = ""
@@ -81,10 +87,18 @@ func proxyServer() {
 							window.location.href = data.location
 						}
 					})
+					if (window.document.body.innerText.includes("Scan is not yet complete")) {
+						window.location.reload()
+					}
 				}, 1000)
 				</script>
 				`
 				c.Response().SetBodyString(res)
+
+				if c.Response().StatusCode() != 200 {
+					c.Response().SetStatusCode(200)
+					c.Response().SetBodyString(res)
+				}
 			}
 			return nil
 		},
