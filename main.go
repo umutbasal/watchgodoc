@@ -90,9 +90,7 @@ func proxyServer() {
 					.then(data => {
 						if (data.location != "" && data.location != window.location.href) {
 							window.location.href = data.location
-						}
-						if (data.force) {
-							console.log("force reload")
+						} else if (data.force) {
 							window.location.reload()
 						}
 					})
